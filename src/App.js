@@ -1,25 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import Navigation from './components/Navigation';
+import { Outlet } from 'react-router-dom';
+import SearchForm from './components/SearchForm';
+import { BookmarksContext } from './components/MyContext';
+import { useReducer } from 'react';
+import BookmarkReducer from './components/BookmarkReducer';
 
-function App() {
+const App = () => {
+  const [bookmarks, dispatch] = useReducer(
+    BookmarkReducer,
+    localStorage.getItem('bookmarks')
+      ? JSON.parse(localStorage.getItem('bookmarks'))
+      : []
+  );
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='app'>
+      <Navigation />
+      <section className='search-section'>
+        <SearchForm placeHolder='Search for movies or TV series' />
+      </section>
+      <BookmarksContext.Provider value={{ bookmarks, dispatch }}>
+        <Outlet />
+      </BookmarksContext.Provider>
     </div>
   );
-}
+};
 
 export default App;
